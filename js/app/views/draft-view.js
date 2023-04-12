@@ -1,4 +1,4 @@
-define(function () {
+define( function () {
     let externals = {};
     let elements = {};
     let handlers = {};
@@ -80,14 +80,7 @@ define(function () {
 
 
         elements.app.append(elements.videoCard);
-  $('.card').on('click', function() {
-  // Get the card.id of the clicked card
-  var cardId = $(this).attr('id');
-
-  // Call the callbackFunction with the cardId as an argument
-  callbackFunction(cardId);
-});
-
+ 
         
     }
 

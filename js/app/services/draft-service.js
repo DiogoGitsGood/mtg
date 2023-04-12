@@ -1,151 +1,183 @@
 define(function () {
-  let externals = {};
-  const players = []; const totalPlayers = 7;
-  externals.startDraftGame = async function (setCode, callbackFunction) {
+let externals = {};
+const players = []; 
+const totalPlayers = 7;
 
-    const userPlayerName = 'User';
+externals.startDraftGame = async function (setCode, callbackFunction) {
 
-    let boostersCreated = 0;
+const userPlayerName = 'User';
+let boostersCreated = 0;
 
-    for (let i = 1; i <= totalPlayers; i++) {
-      const player = {
-        name: `Player ${i}`,
-        booster: null,
-        pickedCards: [],
-        id: `${i}-1`
-      };
-      await generateBoosterForPlayer(player);
-      players.push(player);
-    }
-
-    const userPlayer = {
-      name: userPlayerName,
-      booster: null,
-      pickedCards: [],
-      id: 7
-    };
-    await generateBoosterForPlayer(userPlayer);
-    players.push(userPlayer);
-
-    if (boostersCreated === (totalPlayers + 1)) {
-      callbackFunction(userPlayer.booster);
-    }
-
-    async function generateRandomBooster(setCode) {
-      return new Promise((resolve) => {
-        fetch(`https://api.scryfall.com/cards/search?q=set:${setCode}`)
-          .then(response => response.json())
-          .then(response => response.data)
-          .then(cards => {
-            const rareMythic = cards.filter(card => card.rarity === 'rare' || card.rarity === 'mythic');
-            const uncommons = cards.filter(card => card.rarity === 'uncommon');
-            const commons = cards.filter(card => card.rarity === 'common' &&
-              card.name.toLowerCase() !== 'forest' &&
-              card.name.toLowerCase() !== 'island' &&
-              card.name.toLowerCase() !== 'swamp' &&
-              card.name.toLowerCase() !== 'mountain' &&
-              card.name.toLowerCase() !== 'plains');
-            const booster = [];
-            if (rareMythic.length > 0) {
-              booster.push(mapCard(rareMythic[Math.floor(Math.random() * rareMythic.length)]));
-            } else {
-              booster.push(mapCard(commons[Math.floor(Math.random() * commons.length)]));
-            }
-
-            for (let i = 0; i < 3; i++) {
-              booster.push(mapCard(uncommons[Math.floor(Math.random() * uncommons.length)]));
-            }
-
-            for (let i = 0; i < 11; i++) {
-              booster.push(mapCard(commons[Math.floor(Math.random() * commons.length)]));
-            }
-
-            boostersCreated++;
-            resolve(booster);
-          });
-      });
-    }
-
-    function mapCard(card) {
-      return {
-        name: card.name,
-        id: card.id,
-        card: card.image_uris ? card.image_uris.normal : card.card_faces[0].image_uris.normal,
-        rarity: card.rarity,
-        colors: card.colors
-      };
-    }
-
-
-    async function generateBoosterForPlayer(player) {
-      player.booster = await generateRandomBooster(setCode);
-      console.log(`Player ${player.name} received a booster:`, player.booster);
-    }
-
+for (let i = 0; i < totalPlayers; i++) {
+  const player = {
+    name: `Player ${i}`,
+    booster: null,
+    pickedCards: [],
+    id: `${i}`
   };
+  await generateBoosterForPlayer(player);
+  players.push(player);
+}
 
-  externals.pickCard = function (cardId) {
-    let selectedPlayer = players[7];
-    let card;
+const userPlayer = {
+  name: userPlayerName,
+  booster: null,
+  pickedCards: [],
+  id: '7'
+};
+await generateBoosterForPlayer(userPlayer);
+players.push(userPlayer);
+
+if (boostersCreated === (totalPlayers + 1)) {
+  callbackFunction(userPlayer.booster);
+}
+
+async function generateRandomBooster(setCode) {
+  return new Promise((resolve) => {
+    fetch(`https://api.scryfall.com/cards/search?q=set:${setCode}`)
+      .then(response => response.json())
+      .then(response => response.data)
+      .then(cards => {
+        const rareMythic = cards.filter(card => card.rarity === 'rare' || card.rarity === 'mythic');
+        const uncommons = cards.filter(card => card.rarity === 'uncommon');
+        const commons = cards.filter(card => card.rarity === 'common' &&
+          card.name.toLowerCase() !== 'forest' &&
+          card.name.toLowerCase() !== 'island' &&
+          card.name.toLowerCase() !== 'swamp' &&
+          card.name.toLowerCase() !== 'mountain' &&
+          card.name.toLowerCase() !== 'plains');
+        const booster = [];
+        if (rareMythic.length > 0) {
+          booster.push(mapCard(rareMythic[Math.floor(Math.random() * rareMythic.length)]));
+        } else {
+          booster.push(mapCard(commons[Math.floor(Math.random() * commons.length)]));
+        }
+        for (let i = 0; i < 3; i++) {
+          booster.push(mapCard(uncommons[Math.floor(Math.random() * uncommons.length)]));
+        }
+        for (let i = 0; i < 11; i++) {
+          booster.push(mapCard(commons[Math.floor(Math.random() * commons.length)]));
+        }
+        boostersCreated++;
+        resolve(booster);
+      });
+  });
+}
+
+
+function mapCard(card) {
+  return {
+    name: card.name,
+    id: card.id,
+    card: card.image_uris ? card.image_uris.normal : card.card_faces[0].image_uris.normal,
+    rarity: card.rarity,
+    colors: card.colors
+  };
+}
 
 
 
-    for (var i = 0; i <= selectedPlayer.booster.length; i++) {
-      if (selectedPlayer.booster[i].id === cardId) {
-        card = selectedPlayer.booster[i];
-        break;
-      }
-    }
+async function generateBoosterForPlayer(player) {
+  player.booster = await generateRandomBooster(setCode);
+  console.log(`Player ${player.name} received a booster:`, player.booster);
+}
 
-    if (selectedPlayer && card) {
-      selectedPlayer.booster.splice(cardId, 1);
-      selectedPlayer.pickedCards.push(card);
+};
 
-      console.log(`Player ${selectedPlayer.name} picked card: ${card.name}`);
 
-      passBoosterToNextPlayer(selectedPlayer);
-    }
 
+externals.pickCard = function (cardId) {
+let pb = players[7].booster;
+let p = players[7];
+for (var i = 0; i <= pb.length; i++) {
+  if (pb[i].id === cardId) {
+      p.pickedCards.push(pb[i]);
+      p.booster.splice(i,1);
+      console.log(`Player ${p.name} picked card: ${pb[i].name}`);
+      break;
 
   }
+}return botTurn();
+
+
+}
+
+
+function botTurn(){
+
+for (let i = 0; i < players.length; i++) {
+if (players[i].id !== '7') { 
+botPick(players[i]);
+ 
+}
+
+}passBoosterToNextPlayer();
+console.log("all boosters were passed XDD");
+console.log(players);
+return players[7].booster;
+
+}
 
 
 
+function botPick(player){ 
+  let pickedCard = player.booster.shift()
+player.pickedCards.push(pickedCard);
+}
 
 
+function passBoosters() {
+  for (var i = 0; i < players.length; i++) {
+    var currentPlayer = players[i];
+    var nextPlayer = players[(i + 1)]; // Calculate index of next player (wrapping around to the beginning)
 
+    // Store the booster of the current player in a temporary variable
+    var tempBooster = currentPlayer.booster;
 
+    // Set the booster of the current player to the booster of the next player
+    currentPlayer.booster = nextPlayer.booster;
 
-
-
-
-
-
-  function passBoosterToNextPlayer(player) {
-    console.log("pass")
-    const nextPlayerId = (player.id + 1) % players.length; // Calculate next player ID, handling wrapping around
-    const pickedCard = player.booster[0]; // Pick the first card from the booster
-
-    // Call the pickCardFromBooster function with the next player and the picked card
-    pickCardFromBooster(players[nextPlayerId], pickedCard);
-
-    // Remove the picked card from the current player's booster
-    player.booster.shift();
+    // Set the booster of the next player to the temporary booster of the current player
+    nextPlayer.booster = tempBooster;
   }
-
-  // Loop through each player (except the user player) and simulate picking a card and passing the booster
-  for (let i = 0; i < players.length; i++) {
-    if (players[i].id !== 7) { // Skip the user player with ID 7
-      const pickedCard = players[i].booster[0]; // Pick the first card from the booster
-      pickCardFromBooster(players[i], pickedCard);
-      passBoosterToNextPlayer(players[i]); // Pass the booster to the next player
-    }
-  }
+}
 
 
 
 
 
 
-  return externals;
+
+
+
+
+function passBoosterToNextPlayer() {
+console.log("pass")
+
+
+for (var i = 0; i < players.length; i++) {
+ 
+  var currentPlayer = players[i];
+  var nextPlayer = players[(i + 1)%players.length]; // Calculate index of next player (wrapping around to the beginning)
+
+  // Store the booster of the current player in a temporary variable
+  var tempBooster = currentPlayer.booster;
+
+  // Set the booster of the current player to the booster of the next player
+  currentPlayer.booster = nextPlayer.booster;
+
+  // Set the booster of the next player to the temporary booster of the current player
+  nextPlayer.booster = tempBooster;
+console.log(nextPlayer.name + "got"+ players[i].name+ players[i].booster );
+
+}
+
+}
+
+
+
+
+
+
+return externals;
 });
