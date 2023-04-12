@@ -71,7 +71,8 @@ function mapCard(card) {
     id: card.id,
     card: card.image_uris ? card.image_uris.normal : card.card_faces[0].image_uris.normal,
     rarity: card.rarity,
-    colors: card.colors
+    colors: card.colors,
+    art: card.image_uris.art_crop
   };
 }
 
@@ -92,8 +93,9 @@ let p = players[7];
 for (var i = 0; i <= pb.length; i++) {
   if (pb[i].id === cardId) {
       p.pickedCards.push(pb[i]);
-      p.booster.splice(i,1);
+     
       console.log(`Player ${p.name} picked card: ${pb[i].name}`);
+      p.booster.splice(i,1);
       break;
 
   }
@@ -119,34 +121,10 @@ return players[7].booster;
 }
 
 
-
 function botPick(player){ 
   let pickedCard = player.booster.shift()
 player.pickedCards.push(pickedCard);
 }
-
-
-function passBoosters() {
-  for (var i = 0; i < players.length; i++) {
-    var currentPlayer = players[i];
-    var nextPlayer = players[(i + 1)]; // Calculate index of next player (wrapping around to the beginning)
-
-    // Store the booster of the current player in a temporary variable
-    var tempBooster = currentPlayer.booster;
-
-    // Set the booster of the current player to the booster of the next player
-    currentPlayer.booster = nextPlayer.booster;
-
-    // Set the booster of the next player to the temporary booster of the current player
-    nextPlayer.booster = tempBooster;
-  }
-}
-
-
-
-
-
-
 
 
 
@@ -158,7 +136,7 @@ console.log("pass")
 for (var i = 0; i < players.length; i++) {
  
   var currentPlayer = players[i];
-  var nextPlayer = players[(i + 1)%players.length]; // Calculate index of next player (wrapping around to the beginning)
+  var nextPlayer = players[(i + 1)%players.length];
 
   // Store the booster of the current player in a temporary variable
   var tempBooster = currentPlayer.booster;
@@ -176,7 +154,9 @@ console.log(nextPlayer.name + "got"+ players[i].name+ players[i].booster );
 
 
 
-
+externals.getUserPicks = function(){
+  return players[7].pickedCards;
+}
 
 
 return externals;

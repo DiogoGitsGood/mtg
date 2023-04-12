@@ -16,7 +16,7 @@ define(["views/draft-view", "services/draft-service"], function (view, service) 
         bindHomeEventHandler();
         service.startDraftGame("dmu", function (cardlist) {
             view.renderMany(cardlist);
-
+view.renderSidebar(service.getUserPicks());
 
             $('.card').on('click', function() {
                 // Get the card.id of the clicked card
@@ -32,6 +32,9 @@ define(["views/draft-view", "services/draft-service"], function (view, service) 
    function clickedACard(cardId) {
       
             view.renderMany(service.pickCard(cardId));
+view.renderSidebar(service.getUserPicks());
+
+
             $('.card').on('click', function() {
                 // Get the card.id of the clicked card
                 var cardId = $(this).attr('id');

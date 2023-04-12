@@ -76,13 +76,58 @@ define( function () {
             elements.videoCard.html(cardHtml);
         }
 
-  
+ 
 
 
         elements.app.append(elements.videoCard);
- 
+
         
     }
+
+
+externals.renderSidebar = function(sideList) {
+    // Create the sideCard element as a div on the right side of the screen
+    if (!elements.sideCard) {
+        elements.sideCard = $("<div id='sideList' class='side-container'></div>");
+        elements.sideCard.css({
+             "display": "flex",
+
+            "position": "fixed",
+            "top": "0",
+            "right": "0",
+            "bottom": "0",
+            "width": "300px", // Adjust the width to your desired value
+            "background-color": "#f8f8f8", // Set the background color of the sidebar
+            "padding": "10px", // Add padding for spacing
+            "overflow-y": "auto"
+ // Add scrollbar if needed
+        });
+    }
+
+    elements.sideCard.empty();
+
+    if (sideList && sideList.length > 0) {
+        let cardHtml = "";
+        for (let i = 0; i < sideList.length; i++) {
+            let sideCard = sideList[i];
+            cardHtml += `
+    <div id=${sideCard.id} class='sideCard' style="width: 100%; display: block; position: relative;flex-direction:column;">
+                    <div class='cardTitle' style="text-align: center; z-index: 1; color: white; position: absolute; top: 0; left: 0; right: 0; padding: 30px 10px 10px; background-color: rgba(0, 0, 0, 0.5);">${sideCard.name}</div> 
+                    <div class="imageContainer" style="width: 100%; height: 100%; overflow: hidden; position: relative;">
+                        <img src='${sideCard.art}' style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+ 
+            `;
+        }
+        elements.sideCard.html(cardHtml);
+    }
+
+    elements.app.append(elements.sideCard);
+};
+
+
+
 
 
 
