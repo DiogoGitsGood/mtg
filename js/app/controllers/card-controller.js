@@ -3,11 +3,9 @@ define(["views/card-view", "services/card-service"], function (view, service) {
 
   function bindHomeEventHandler() {
     view.bind("buttonHomeClick", buttonHomeHandler);
-
   }
 
   function buttonHomeHandler() {
-
     window.location.hash = "#home";
 
   }
@@ -15,7 +13,7 @@ define(["views/card-view", "services/card-service"], function (view, service) {
   externals.start = function () {
     console.log("here");
     bindHomeEventHandler();
-
+    
     service.getRandomCard(function (data) {
       view.render(data);
     });

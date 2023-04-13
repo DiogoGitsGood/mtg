@@ -85,7 +85,6 @@ define(function () {
 
 
     externals.renderSidebar = function (sideList) {
-        // Create the sideCard element as a div on the right side of the screen
         if (!elements.sideCard) {
             elements.sideCard = $("<div id='sideList' class='side-container'></div>");
             elements.sideCard.css({
@@ -95,11 +94,11 @@ define(function () {
                 "top": "0",
                 "right": "0",
                 "bottom": "0",
-                "width": "300px", // Adjust the width to your desired value
-                "background-color": "#f8f8f8", // Set the background color of the sidebar
-                "padding": "10px", // Add padding for spacing
+                "width": "300px",
+                "background-color": "#f8f8f8",
+                "padding": "10px",
                 "overflow-y": "auto"
-                // Add scrollbar if needed
+
             });
         }
 
@@ -111,12 +110,10 @@ define(function () {
                 let sideCard = sideList[i];
                 cardHtml += `
     <div id=${sideCard.id} class='sideCard' >
-                    <div class='cardTitle' style="">${sideCard.name}</div> 
-                   
+                    <div class='cardTitle' style="">${sideCard.name}</div>          
                         <img src='${sideCard.art}' style="">
                     </div>
                 </div>
- 
             `;
             }
             elements.sideCard.html(cardHtml);
@@ -124,11 +121,6 @@ define(function () {
 
         elements.app.append(elements.sideCard);
     };
-
-
-
-
-
 
 
     externals.renderMany = function (cardlist, callbackFunction) {

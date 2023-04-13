@@ -12,38 +12,28 @@ define(["views/draft-view", "services/draft-service"], function (view, service) 
     }
 
     externals.start = function () {
-        console.log("draft controller");
         bindHomeEventHandler();
         service.startDraftGame("dmu", function (cardlist) {
-            view.renderMany(cardlist);
-view.renderSidebar(service.getUserPicks());
-
-            $('.card').on('click', function() {
-                // Get the card.id of the clicked card
+        view.renderMany(cardlist);
+        view.renderSidebar(service.getUserPicks());
+            $('.card').on('click', function () {
                 var cardId = $(this).attr('id');
-              
-                // Call the callbackFunction with the cardId as an argument
                 clickedACard(cardId);
-                
-              });
-            
+
+            });
+
         });
     }
-   function clickedACard(cardId) {
-      
-            view.renderMany(service.pickCard(cardId));
-view.renderSidebar(service.getUserPicks());
+    function clickedACard(cardId) {
 
+        view.renderMany(service.pickCard(cardId));
+        view.renderSidebar(service.getUserPicks());
 
-            $('.card').on('click', function() {
-                // Get the card.id of the clicked card
-                var cardId = $(this).attr('id');
-              
-                // Call the callbackFunction with the cardId as an argument
-                clickedACard(cardId);
-                
-              
-    })};
+        $('.card').on('click', function () {
+            var cardId = $(this).attr('id');
+            clickedACard(cardId);
+        })
+    };
 
     return externals;
 });
