@@ -72,14 +72,11 @@ define(function () {
         </div> `;
 
             }
+
             elements.videoCard.html(cardHtml);
         }
 
-
-
-
         elements.app.append(elements.videoCard);
-
 
     }
 
@@ -109,7 +106,7 @@ define(function () {
             for (let i = 0; i < sideList.length; i++) {
                 let sideCard = sideList[i];
                 cardHtml += `
-    <div id=${sideCard.id} class='sideCard' >
+                <div id=${sideCard.id} class='sideCard' >
                     <div class='cardTitle' style="">${sideCard.name}</div>          
                         <img src='${sideCard.art}' style="">
                     </div>
@@ -124,19 +121,13 @@ define(function () {
 
 
     externals.renderMany = function (cardlist, callbackFunction) {
-
+    
         if (!elements.app) {
             elements.app = $("#app");
         }
-
         renderButton();
-        console.log("rendermany")
-
         renderCardList(cardlist, callbackFunction);
     };
-
-
-
 
     return externals;
 });
